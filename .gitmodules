@@ -1,3 +1,4 @@
 [submodule "GeneralMetapop"]
 	path = GeneralMetapop
-	url = https://github.com/AceRNorth/GeneralMetapop.git
+    url = https://github.com/AceRNorth/GeneralMetapop.git
+    ignore = all
