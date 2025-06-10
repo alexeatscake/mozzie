@@ -3,12 +3,12 @@ requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "mossie"
+name = "mozzie"
 version = "0.1.0"
 authors = [
   { name = "Alex Hickey", email = "alexander.john.hickey@gmail.com" },
 ]
-description = "This is a surragate modeling package for GDSiMS."
+description = "This is a surrogate modelling package for GDSiMS."
 readme = "README.md"
 requires-python = ">=3.10"
 classifiers = [
@@ -33,10 +33,10 @@ dependencies = [
 [project.optional-dependencies]
 
 [project.urls]
-Homepage = "https://github.com/alexeatscake/mossie"
-"Bug Tracker" = "https://github.com/alexeatscake/mossie/issues"
-Discussions = "https://github.com/alexeatscake/mossie/discussions"
-Changelog = "https://github.com/alexeatscake/mossie/releases"
+Homepage = "https://github.com/alexeatscake/mozzie"
+"Bug Tracker" = "https://github.com/alexeatscake/mozzie/issues"
+Discussions = "https://github.com/alexeatscake/mozzie/discussions"
+Changelog = "https://github.com/alexeatscake/mozzie/releases"
 
 [tool.pytest.ini_options]
 minversion = "6.0"
@@ -51,7 +51,7 @@ testpaths = [
 ]
 
 [tool.coverage]
-run.source = ["mossie"]
+run.source = ["mozzie"]
 port.exclude_lines = [
   'pragma: no cover',
   '\.\.\.',

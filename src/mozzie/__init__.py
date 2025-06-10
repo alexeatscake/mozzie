@@ -1,5 +1,5 @@
 """
-mossie: This is a surragate modeling package for GDSiMS.
+mozzie: This is a surrogate modelling package for GDSiMS.
 """
 
 from __future__ import annotations
