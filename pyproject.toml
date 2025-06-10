@@ -28,6 +28,7 @@ dependencies = [
   "pytest",
   "pytest-cov",
   "pre-commit",
+  "tqdm",
 ]
 
 [project.optional-dependencies]

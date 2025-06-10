@@ -1,5 +1,5 @@
 """
-Generate: This module contains functionst to run the GDSiMS to generate example
+Generate: This module contains functions to run the GDSiMS to generate example
 data for training and testing the surrogate models.
 """
 
@@ -60,8 +60,6 @@ def run_custom(script_path: str, working_dir: str, params_path: str) -> str:
     Returns:
         str: Output from the GDSiMS script.
     """
-    print(f"Running script: {script_path}")
-
     process = subprocess.Popen(
         [script_path],
         cwd=working_dir,
@@ -74,20 +72,17 @@ def run_custom(script_path: str, working_dir: str, params_path: str) -> str:
         msg = "Failed to open stdin for the process."
         raise RuntimeError(msg)
 
-    time.sleep(0.5)
+    time.sleep(0.1)
     process.stdin.write(b"100\n")
     process.stdin.flush()
-    print("Selecting custom parameters")
 
-    time.sleep(0.5)
+    time.sleep(0.1)
     process.stdin.write(f"{params_path}\n".encode())
     process.stdin.flush()
-    print("providing parameters file")
 
-    time.sleep(0.5)
+    time.sleep(0.1)
     process.stdin.write(b"y\n")
     process.stdin.flush()
-    print("Starting Process")
 
     stdout, _ = process.communicate()
     return stdout.decode()
