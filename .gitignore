@@ -1,7 +1,8 @@
 # Data Files
 
-data/output_files/
-data/configs/
+data/generated/
+!data/generated/example/params/example_params_1.txt
+!data/generated/example/params/example_params_2.txt
 
 ## FROM TEMPLATE ##
 
