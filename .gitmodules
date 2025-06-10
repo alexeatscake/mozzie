@@ -1,0 +1,3 @@
+[submodule "GeneralMetapop"]
+	path = GeneralMetapop
+	url = https://github.com/AceRNorth/GeneralMetapop.git
