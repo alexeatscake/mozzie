@@ -26,7 +26,7 @@ def main(set_path: str):
         print(f"No .tex files found in {params_dir}")
         return
 
-    for params_path in (pbar := tqdm(tex_files)):
+    for params_path in (pbar := tqdm(sorted(tex_files))):
         pbar.set_postfix_str(os.path.basename(params_path))
         run_custom(
             script_path=script_path,

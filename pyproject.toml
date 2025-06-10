@@ -29,6 +29,7 @@ dependencies = [
   "pytest-cov",
   "pre-commit",
   "tqdm",
+  "autoemulate>=0.3.2",
 ]
 
 [project.optional-dependencies]
