@@ -8,6 +8,49 @@ from __future__ import annotations
 import subprocess
 import time
 
+__all__ = [
+    "parameter_order",
+    "run_custom",
+    "run_default",
+]
+
+parameter_order = [
+    "num_runs",
+    "max_t",
+    "num_pat",
+    "mu_j",
+    "mu_a",
+    "beta",
+    "theta",
+    "comp_power",
+    "min_dev",
+    "gamma",
+    "xi",
+    "e",
+    "driver_start",
+    "num_driver_M",
+    "num_driver_sites",
+    "disp_rate",
+    "max_disp",
+    "psi",
+    "mu_aes",
+    "t_hide1",
+    "t_hide2",
+    "t_wake1",
+    "t_wake2",
+    "alpha0_mean",
+    "alpha0_variance",
+    "alpha1",
+    "amp",
+    "resp",
+    "rec_start",
+    "rec_end",
+    "rec_interval_global",
+    "rec_interval_local",
+    "rec_sites_freq",
+    "set_label",
+]
+
 
 def run_default(script_path: str, working_dir: str) -> str:
     """

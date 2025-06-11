@@ -5,42 +5,7 @@ import yaml
 from autoemulate.experimental_design import LatinHypercube
 from tqdm import tqdm
 
-PARAMETER_ORDER = [
-    "num_runs",
-    "max_t",
-    "num_pat",
-    "mu_j",
-    "mu_a",
-    "beta",
-    "theta",
-    "comp_power",
-    "min_dev",
-    "gamma",
-    "xi",
-    "e",
-    "driver_start",
-    "num_driver_M",
-    "num_driver_sites",
-    "disp_rate",
-    "max_disp",
-    "psi",
-    "mu_aes",
-    "t_hide1",
-    "t_hide2",
-    "t_wake1",
-    "t_wake2",
-    "alpha0_mean",
-    "alpha0_variance",
-    "alpha1",
-    "amp",
-    "resp",
-    "rec_start",
-    "rec_end",
-    "rec_interval_global",
-    "rec_interval_local",
-    "rec_sites_freq",
-    "set_label",
-]
+from mozzie.generate import parameter_order
 
 
 def main(config_path: str):
@@ -123,7 +88,7 @@ def main(config_path: str):
         this_set["set_label"] = i
         params_path = os.path.join(params_folder, f"params_{i}.txt")
         with open(params_path, "w") as params_file:
-            for param_name in PARAMETER_ORDER:
+            for param_name in parameter_order:
                 if param_name in this_set:
                     params_file.write(f"{this_set[param_name]}\n")
                 else:
