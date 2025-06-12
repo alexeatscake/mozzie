@@ -9,7 +9,7 @@ from mozzie.generate import parameter_order
 
 
 def main(config_path: str):
-    main_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    main_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 
     # Make Parameters folder
     params_folder = os.path.join(os.path.dirname(config_path), "params")

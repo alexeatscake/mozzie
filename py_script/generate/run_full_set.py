@@ -1,19 +1,14 @@
 import argparse
 import glob
 import os
-from concurrent.futures import ProcessPoolExecutor
 
 from tqdm import tqdm
 
 from mozzie.generate import run_custom
 
 
-def run_for_parallel(x):
-    return run_custom(*x)
-
-
-def main(set_path: str, number_of_workers: int):
-    main_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+def main(set_path: str):
+    main_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
     script_path = os.path.join(main_dir, "GeneralMetapop/build/gdsimsapp")
     working_dir = os.path.join(main_dir, set_path)
     params_dir = os.path.join(main_dir, set_path, "params")
@@ -31,18 +26,12 @@ def main(set_path: str, number_of_workers: int):
         print(f"No .tex files found in {params_dir}")
         return
 
-    input_values = [
-        (script_path, working_dir, params_path) for params_path in sorted(tex_files)
-    ]
-
-    print(f"Found {len(input_values)} .tex files to process in {params_dir}")
-    print(f"Using {number_of_workers} workers for processing.")
-    with ProcessPoolExecutor(max_workers=number_of_workers) as executor:
-        list(
-            tqdm(
-                executor.map(run_for_parallel, input_values),
-                total=len(input_values),
-            )
+    for params_path in (pbar := tqdm(sorted(tex_files))):
+        pbar.set_postfix_str(os.path.basename(params_path))
+        run_custom(
+            script_path=script_path,
+            working_dir=working_dir,
+            params_path=params_path,
         )
 
 
@@ -55,6 +44,4 @@ if __name__ == "__main__":
         type=str,
         help="Relative path to the experiment set.",
     )
-    number_of_workers = os.environ.get("WORKERS_FOR_MOZZIE", "4")
-    print(os.environ)
-    main(parser.parse_args().set_path, int(number_of_workers))
+    main(parser.parse_args().set_path)
