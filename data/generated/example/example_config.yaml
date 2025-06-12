@@ -1,0 +1,49 @@
+set_values:
+  num_runs: 1
+  max_t: 1000
+  num_pat: 50
+  mu_j: 0.05
+  mu_a: 0.125
+  beta: 100
+  theta: 9
+  comp_power: 0.0666667
+  min_dev: 10
+  gamma: 0.025
+  xi: 0.2
+  e: 0.95
+  driver_start: 100
+  num_driver_M: 1000
+  num_driver_sites: 5
+  disp_rate: 0.01
+  max_disp: 0.2
+  psi: 0
+  mu_aes: 0
+  t_hide1: 0
+  t_hide2: 0
+  t_wake1: 0
+  t_wake2: 0
+  alpha0_mean: 100000
+  alpha0_variance: 0
+  alpha1: 0
+  amp: 0
+  resp: 0
+  rec_start: 0
+  rec_end: 1000
+  rec_interval_global: 1
+  rec_interval_local: 10
+  rec_sites_freq: 1
+to_sample:
+  mu_j:
+    min: 0.005
+    max: 0.2
+    type: float
+  mu_a:
+    min: 0.01
+    max: 0.5
+    type: float
+num_samples: 10
+start_index: 10
+analysis_range:
+  start: 100
+  end: 1000
+  step: 10
