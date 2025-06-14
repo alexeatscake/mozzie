@@ -5,6 +5,7 @@ import yaml
 from autoemulate.experimental_design import LatinHypercube
 from tqdm import tqdm
 
+from mozzie.data_prep import read_config
 from mozzie.generate import parameter_order
 
 
@@ -19,42 +20,7 @@ def main(config_path: str):
     with open(os.path.join(main_dir, config_path)) as file:
         config = yaml.safe_load(file)
 
-    set_values = config.get("set_values")
-    if set_values is None:
-        msg = "No set values found in the config file."
-        raise ValueError(msg)
-
-    if not isinstance(set_values, dict):
-        msg = "The 'set_values' field must be a dictionary."
-        raise ValueError(msg)
-
-    to_sample = config.get("to_sample")
-    if to_sample is None:
-        msg = "No parameters to sample found in the config file."
-        raise ValueError(msg)
-
-    if not isinstance(to_sample, dict):
-        msg = "The 'to_sample' field must be a dictionary of parameters."
-        raise ValueError(msg)
-    for param_options in to_sample.values():
-        if not isinstance(param_options, dict):
-            msg = "Each parameter option must be a dictionary."
-            raise ValueError(msg)
-        if "type" not in param_options:
-            msg = "Each parameter option must specify a 'type'."
-            raise ValueError(msg)
-        if "min" not in param_options or "max" not in param_options:
-            msg = "Each parameter option must specify 'min' and 'max' values."
-            raise ValueError(msg)
-    num_samples = config.get("num_samples", 100)
-    if not isinstance(num_samples, int) or num_samples <= 0:
-        msg = "num_samples must be a positive integer."
-        raise ValueError(msg)
-
-    start_index = config.get("start_index", num_samples)
-    if not isinstance(start_index, int) or start_index < 0:
-        msg = "start_index must be a non-negative integer."
-        raise ValueError(msg)
+    set_values, to_sample, num_samples, start_index, _ = read_config(config)
 
     # Pull out the parameters to sample
     cube_ranges = []
