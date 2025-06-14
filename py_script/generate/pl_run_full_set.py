@@ -56,5 +56,4 @@ if __name__ == "__main__":
         help="Relative path to the experiment set.",
     )
     number_of_workers = os.environ.get("WORKERS_FOR_MOZZIE", "4")
-    print(os.environ)
     main(parser.parse_args().set_path, int(number_of_workers))
