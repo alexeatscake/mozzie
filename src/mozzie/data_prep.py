@@ -295,3 +295,83 @@ def contruct_local_x_and_y(
             y.append(local_values[next_time_point].flatten())
 
     return np.array(X), np.array(y)
+
+
+def load_total_values(data_path: str, config_dict: dict) -> dict[int, np.ndarray]:
+    """
+    This loads the total values from the output files.
+
+    Args:
+        data_path (str): The path to the directory containing the output files.
+        config_dict (dict): The configuration dictionary which needs to contain:
+            - "start_index": The starting index for the samples.
+            - "num_samples": The number of samples to load.
+
+    Returns:
+        dict[int, np.ndarray]: A dictionary where keys are sample indices and values
+            are numpy arrays containing the total values for each sample.
+    """
+    output_files_dir = os.path.join(data_path, "output_files")
+    if not os.path.exists(output_files_dir):
+        msg = f"Output files directory {output_files_dir} does not exist."
+        raise FileNotFoundError(msg)
+
+    start_index = config_dict["start_index"]
+    end_index = start_index + config_dict["num_samples"]
+
+    total_data: dict[int, np.ndarray] = {}
+
+    for val in range(start_index, end_index):
+        local_df = pd.read_csv(
+            os.path.join(data_path, "output_files", f"Totals{val}run1.txt"),
+            sep="\t",
+            header=1,
+        )
+        total_data[val] = local_df[["WW", "WD", "DD", "WR", "RR", "DR"]].values
+
+    return total_data
+
+
+def contruct_total_x_and_y(
+    total_data: dict[int, np.ndarray],
+    sample_values: dict[int, dict[str, float]],
+) -> tuple[np.ndarray, np.ndarray]:
+    """
+    Constructs the feature matrix X and target vector y from total data and
+    sample values.
+
+    Args:
+        total_data (dict[int, np.ndarray]): Total data where keys are sample indices
+            and values are numpy arrays containing the total values for each sample.
+        sample_values (dict[int, dict[str, float]]): Sample values where keys are
+            sample indices and values are dictionaries of parameter values for each
+            sample.
+
+    Returns:
+        tuple[np.ndarray, np.ndarray]: A tuple containing the feature matrix X and
+            the target vector y. X is a 2D array where each row corresponds to a
+            sample's total values concatenated with its sample values, and y is a 2D
+            array where each row corresponds to the total values for the sample.
+    """
+    X = []
+    y = []
+
+    for sample_idx, total_values in total_data.items():
+        X.append(np.array(list(sample_values[sample_idx].values())))
+        y.append(total_values.flatten())
+
+    return np.array(X), np.array(y)
+
+
+def cast_back_data(flattened_data: np.ndarray) -> pd.DataFrame:
+    """
+    Casts back the flattened data to a DataFrame with the original column names.
+
+    Args:
+        flattened_data (np.ndarray): The flattened data to be cast back.
+
+    Returns:
+        pd.DataFrame: A DataFrame with the original column names.
+    """
+    columns = ["WW", "WD", "DD", "WR", "RR", "DR"]
+    return pd.DataFrame(flattened_data.reshape(-1, len(columns)), columns=columns)
