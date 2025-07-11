@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import subprocess
 import time
+from pathlib import Path
 
 __all__ = [
     "parameter_order",
@@ -52,7 +53,7 @@ parameter_order = [
 ]
 
 
-def run_default(script_path: str, working_dir: str) -> str:
+def run_default(script_path: str | Path, working_dir: str | Path) -> str:
     """
     Run the GDSiMS script with default parameters.
 
@@ -66,8 +67,8 @@ def run_default(script_path: str, working_dir: str) -> str:
     print(f"Running script: {script_path}")
 
     process = subprocess.Popen(
-        [script_path],
-        cwd=working_dir,
+        [str(script_path)],
+        cwd=str(working_dir),
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
@@ -91,7 +92,9 @@ def run_default(script_path: str, working_dir: str) -> str:
     return stdout.decode()
 
 
-def run_custom(script_path: str, working_dir: str, params_path: str) -> str:
+def run_custom(
+    script_path: str | Path, working_dir: str | Path, params_path: str | Path
+) -> str:
     """
     Run the GDSiMS script with custom parameters.
 
@@ -104,8 +107,8 @@ def run_custom(script_path: str, working_dir: str, params_path: str) -> str:
         str: Output from the GDSiMS script.
     """
     process = subprocess.Popen(
-        [script_path],
-        cwd=working_dir,
+        [str(script_path)],
+        cwd=str(working_dir),
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,

@@ -1,16 +1,17 @@
 import argparse
-import os
+from pathlib import Path
 
 from mozzie.generate import run_custom
 
 
-def main(params_path: str):
-    main_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
+def main(params_path: str | Path):
+    main_dir = Path(__file__).resolve().parent.parent.parent
 
-    script_path = os.path.join(main_dir, "GeneralMetapop/build/gdsimsapp")
-    working_dir = os.path.join(main_dir, "data/generated/example")
-    params_path = os.path.join(main_dir, params_path)
-    if not os.path.exists(script_path):
+    script_path = main_dir / "GeneralMetapop/build/gdsimsapp"
+    working_dir = main_dir / "data/generated/example"
+    params_path = main_dir / params_path
+
+    if not script_path.exists():
         msg = f"GDSiMS params not found at {params_path}"
         raise FileNotFoundError(msg)
 

@@ -1,6 +1,5 @@
 import argparse
-import glob
-import os
+from pathlib import Path
 
 from tqdm import tqdm
 
@@ -8,26 +7,26 @@ from mozzie.generate import run_custom
 
 
 def main(set_path: str):
-    main_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
-    script_path = os.path.join(main_dir, "GeneralMetapop/build/gdsimsapp")
-    working_dir = os.path.join(main_dir, set_path)
-    params_dir = os.path.join(main_dir, set_path, "params")
+    main_dir = Path(__file__).resolve().parent.parent.parent
+    script_path = main_dir / "GeneralMetapop/build/gdsimsapp"
+    working_dir = main_dir / set_path
+    params_dir = working_dir / "params"
 
-    if not os.path.exists(script_path):
+    if not script_path.exists():
         msg = f"GDSiMS script not found at {script_path}"
         raise FileNotFoundError(msg)
 
-    if not os.path.isdir(params_dir):
+    if not params_dir.is_dir():
         msg = f"Params folder not found at {params_dir}"
         raise FileNotFoundError(msg)
 
-    tex_files = glob.glob(os.path.join(params_dir, "*.txt"))
+    tex_files = sorted(params_dir.glob("*.txt"))
     if not tex_files:
         print(f"No .tex files found in {params_dir}")
         return
 
-    for params_path in (pbar := tqdm(sorted(tex_files))):
-        pbar.set_postfix_str(os.path.basename(params_path))
+    for params_path in (pbar := tqdm(tex_files)):
+        pbar.set_postfix_str(params_path.name)
         run_custom(
             script_path=script_path,
             working_dir=working_dir,
