@@ -1,6 +1,8 @@
 from pathlib import Path
+from unittest.mock import patch
 
 import pandas as pd
+import pytest
 
 import mozzie
 
@@ -39,7 +41,7 @@ def test_run_default(working_dir: Path):
     assert total1_df.shape[0] == 1001, msg
 
 
-def run_custom_test(working_dir: Path):
+def test_run_custom(working_dir: Path):
     """
     Test running the GDSiMS script with custom parameters.
 
@@ -65,3 +67,36 @@ def run_custom_test(working_dir: Path):
     assert not total1_df.empty, msg
     assert "WW" in total1_df.columns, msg
     assert total1_df.shape[0] == 101, msg
+
+
+def test_run_default_stdin_error(working_dir: Path):
+    """
+    Test run_default to simulate stdin error.
+    """
+    working_default_dir = working_dir / "default"
+    working_default_dir.mkdir()
+
+    with patch("subprocess.Popen") as mock_popen:
+        mock_process = mock_popen.return_value
+        mock_process.stdin = None  # Simulate stdin being None
+        mock_process.communicate.return_value = (b"", b"")
+
+        with pytest.raises(RuntimeError, match="Failed to open stdin for the process."):
+            mozzie.generate.run_default(METAPOP_LOC, working_default_dir)
+
+
+def test_run_custom_stdin_error(working_dir: Path):
+    """
+    Test run_custom to simulate stdin error.
+    """
+    working_custom_dir = working_dir / "custom"
+    working_custom_dir.mkdir()
+    params_path = REPO_ROOT / "tests" / "test_data" / "test_params.txt"
+
+    with patch("subprocess.Popen") as mock_popen:
+        mock_process = mock_popen.return_value
+        mock_process.stdin = None  # Simulate stdin being None
+        mock_process.communicate.return_value = (b"", b"")
+
+        with pytest.raises(RuntimeError, match="Failed to open stdin for the process."):
+            mozzie.generate.run_custom(METAPOP_LOC, working_custom_dir, params_path)
