@@ -4,6 +4,7 @@ data/generated/
 !data/generated/example/params/example_params_1.txt
 !data/generated/example/params/example_params_2.txt
 !data/generated/example/example_config.yaml
+!data/generated/fitness_study/fitness_config.yaml
 
 ## FROM TEMPLATE ##
 
