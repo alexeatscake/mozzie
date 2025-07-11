@@ -1,5 +1,5 @@
 import argparse
-import os
+from pathlib import Path
 
 import yaml
 from autoemulate.experimental_design import LatinHypercube
@@ -9,15 +9,16 @@ from mozzie.data_prep import read_config
 from mozzie.generate import parameter_order
 
 
-def main(config_path: str):
-    main_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
+def main(rel_config_path: str):
+    main_dir = Path(__file__).resolve().parent.parent.parent
 
     # Make Parameters folder
-    params_folder = os.path.join(os.path.dirname(config_path), "params")
-    os.makedirs(params_folder, exist_ok=True)
+    config_path = Path(rel_config_path)
+    params_folder = config_path.parent / "params"
+    params_folder.mkdir(exist_ok=True)
 
     # Load Config and Check Validity
-    with open(os.path.join(main_dir, config_path)) as file:
+    with (main_dir / config_path).open() as file:
         config = yaml.safe_load(file)
 
     set_values, to_sample, num_samples, start_index, _ = read_config(config)
@@ -52,8 +53,8 @@ def main(config_path: str):
             this_set[param_name] = sample[j]
 
         this_set["set_label"] = i
-        params_path = os.path.join(params_folder, f"params_{i}.txt")
-        with open(params_path, "w") as params_file:
+        params_path = params_folder / f"params_{i}.txt"
+        with params_path.open("w") as params_file:
             for param_name in parameter_order:
                 if param_name in this_set:
                     params_file.write(f"{this_set[param_name]}\n")
