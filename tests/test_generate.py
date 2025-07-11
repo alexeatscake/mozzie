@@ -1,5 +1,7 @@
 from pathlib import Path
 
+import pandas as pd
+
 import mozzie
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -29,3 +31,37 @@ def test_run_default(working_dir: Path):
     assert (out_file_dir / "LocalData1run1.txt").is_file(), msg
     assert (out_file_dir / "LocalData1run2.txt").is_file(), msg
     # Additional checks for specific output files
+
+    total1_df = pd.read_csv(out_file_dir / "Totals1run1.txt", sep="\t", header=1)
+    msg = "Totals1run1.txt does not contain expected data."
+    assert not total1_df.empty, msg
+    assert "WW" in total1_df.columns, msg
+    assert total1_df.shape[0] == 1001, msg
+
+
+def run_custom_test(working_dir: Path):
+    """
+    Test running the GDSiMS script with custom parameters.
+
+    Args:
+        out_path (Path): Path to the output directory.
+    """
+    working_custom_dir = working_dir / "custom"
+    working_custom_dir.mkdir()
+    params_path = REPO_ROOT / "tests" / "test_data" / "test_params.txt"
+    output = mozzie.generate.run_custom(METAPOP_LOC, working_custom_dir, params_path)
+    msg = "Program did not give expected output."
+    assert "Program run time" in output, msg
+    out_file_dir = working_custom_dir / "output_files"
+    msg = "Output directory not created as expected."
+    assert out_file_dir.is_dir(), msg
+    msg = "Expected output files not found in the output directory."
+    assert (out_file_dir / "Totals1001run1.txt").is_file(), msg
+    assert (out_file_dir / "CoordinateList1001run1.txt").is_file(), msg
+    assert (out_file_dir / "LocalData1001run1.txt").is_file(), msg
+
+    total1_df = pd.read_csv(out_file_dir / "Totals1001run1.txt", sep="\t", header=1)
+    msg = "Totals1001run1.txt does not contain expected data."
+    assert not total1_df.empty, msg
+    assert "WW" in total1_df.columns, msg
+    assert total1_df.shape[0] == 101, msg
