@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import os
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -83,7 +83,9 @@ def read_config(config_dict: dict):
     return set_values, to_sample, num_samples, start_index, analysis_range
 
 
-def load_test_train(config_path: str, train_fraction: float = 0.8) -> tuple[dict, dict]:
+def load_test_train(
+    config_path: str | Path, train_fraction: float = 0.8
+) -> tuple[dict, dict]:
     """
     Load the configuration file and split the data into training and testing sets.
 
@@ -95,7 +97,7 @@ def load_test_train(config_path: str, train_fraction: float = 0.8) -> tuple[dict
         train_set (dict): Training set configuration.
         test_set (dict): Testing set configuration.
     """
-    with open(config_path) as file:
+    with open(str(config_path)) as file:
         config = yaml.safe_load(file)
 
     set_values, to_sample, num_samples, start_index, analysis_range = read_config(
@@ -125,7 +127,7 @@ def load_test_train(config_path: str, train_fraction: float = 0.8) -> tuple[dict
 
 
 def read_values_from_params(
-    params_path: str, to_sample: dict | list
+    params_path: str | Path, to_sample: dict | list
 ) -> dict[str, float]:
     """
     Reads parameter values from a file and maps them to specified sample names.
@@ -143,7 +145,7 @@ def read_values_from_params(
         ValueError: If a sample name in `to_sample` is not found in `parameter_order`.
     """
 
-    with open(params_path) as file:
+    with open(str(params_path)) as file:
         lines = file.readlines()
 
     sample_values = {}
@@ -160,7 +162,7 @@ def read_values_from_params(
 
 
 def load_samples_values(
-    data_path: str, config_dict: dict
+    data_path: str | Path, config_dict: dict
 ) -> dict[int, dict[str, float]]:
     """
     This loads the sample values from the parameters files.
@@ -184,16 +186,17 @@ def load_samples_values(
 
     to_sample = config_dict["to_sample"].keys()
 
-    params_dir = os.path.join(data_path, "params")
-    if not os.path.exists(params_dir):
+    data_path = Path(data_path)
+    params_dir = data_path / "params"
+    if not params_dir.exists():
         msg = f"Parameters directory {params_dir} does not exist."
         raise FileNotFoundError(msg)
 
     all_sample_values = {}
 
     for val in range(start_index, end_index):
-        params_path = os.path.join(params_dir, f"params_{val}.txt")
-        if not os.path.exists(params_path):
+        params_path = params_dir / f"params_{val}.txt"
+        if not params_path.exists():
             msg = f"Parameters file {params_path} does not exist."
             raise FileNotFoundError(msg)
 
@@ -203,7 +206,7 @@ def load_samples_values(
 
 
 def load_local_values(
-    data_path: str, config_dict: dict
+    data_path: str | Path, config_dict: dict
 ) -> dict[int, dict[int, np.ndarray]]:
     """
     This loads the stepwise local data from the output files.
@@ -219,8 +222,9 @@ def load_local_values(
         dict[int, dict[int, np.ndarray]]: A dictionary where keys are sample indices
             and values are dictionaries mapping time points to local data arrays.
     """
-    output_files_dir = os.path.join(data_path, "output_files")
-    if not os.path.exists(output_files_dir):
+    data_path = Path(data_path)
+    output_files_dir = data_path / "output_files"
+    if not output_files_dir.exists():
         msg = f"Output files directory {output_files_dir} does not exist."
         raise FileNotFoundError(msg)
 
@@ -237,7 +241,7 @@ def load_local_values(
 
     for val in range(start_index, end_index):
         local_df = pd.read_csv(
-            os.path.join(data_path, "output_files", f"LocalData{val}run1.txt"),
+            output_files_dir / f"LocalData{val}run1.txt",
             sep="\t",
             header=1,
         )
@@ -297,7 +301,9 @@ def contruct_local_x_and_y(
     return np.array(X), np.array(y)
 
 
-def load_total_values(data_path: str, config_dict: dict) -> dict[int, np.ndarray]:
+def load_total_values(
+    data_path: str | Path, config_dict: dict
+) -> dict[int, np.ndarray]:
     """
     This loads the total values from the output files.
 
@@ -311,8 +317,9 @@ def load_total_values(data_path: str, config_dict: dict) -> dict[int, np.ndarray
         dict[int, np.ndarray]: A dictionary where keys are sample indices and values
             are numpy arrays containing the total values for each sample.
     """
-    output_files_dir = os.path.join(data_path, "output_files")
-    if not os.path.exists(output_files_dir):
+    data_path = Path(data_path)
+    output_files_dir = data_path / "output_files"
+    if not output_files_dir.exists():
         msg = f"Output files directory {output_files_dir} does not exist."
         raise FileNotFoundError(msg)
 
@@ -323,7 +330,7 @@ def load_total_values(data_path: str, config_dict: dict) -> dict[int, np.ndarray
 
     for val in range(start_index, end_index):
         local_df = pd.read_csv(
-            os.path.join(data_path, "output_files", f"Totals{val}run1.txt"),
+            output_files_dir / f"Totals{val}run1.txt",
             sep="\t",
             header=1,
         )
