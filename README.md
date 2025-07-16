@@ -85,6 +85,23 @@ This as default uses 4 processes, but you can change this by setting the `WORKER
 python py_script/generate/pl_run_full_set.py data/generated/example
 ```
 
+## Surrogate Modelling
+
+To do the modelling you will need a lot of data.
+There exists a configuration file for a fitness study in `data/generated/fitness_study/fitness_config.yaml`.
+
+You can run the following command to generate the data for the fitness study:
+
+```bash
+export WORKERS_FOR_MOZZIE=12
+python py_script/generate/build_param_files.py data/generated/fitness_study/fitness_config.yaml
+python py_script/generate/pl_run_full_set.py data/generated/fitness_study
+python py_script/data_prep/load_total_data.py data/generated/fitness_study/fitness_config.yaml
+```
+
+### Using AutoEmulate
+
+To see the functionality of AutoEmulate, it is best to run the notebook `notebooks/fitness_autoemulate.ipynb`.
 
 ## License
 
