@@ -26,17 +26,17 @@ def main(set_path: str, number_of_workers: int):
         msg = f"Params folder not found at {params_dir}"
         raise FileNotFoundError(msg)
 
-    tex_files = sorted(params_dir.glob("*.txt"))
-    if not tex_files:
-        print(f"No .tex files found in {params_dir}")
+    txt_files = sorted(params_dir.glob("*.txt"))
+    if not txt_files:
+        print(f"No .txt files found in {params_dir}")
         return
 
     input_values = [
         (str(script_path), str(working_dir), str(params_path))
-        for params_path in tex_files
+        for params_path in txt_files
     ]
 
-    print(f"Found {len(input_values)} .tex files to process in {params_dir}")
+    print(f"Found {len(input_values)} .txt files to process in {params_dir}")
     print(f"Using {number_of_workers} workers for processing.")
     with ProcessPoolExecutor(max_workers=number_of_workers) as executor:
         list(
