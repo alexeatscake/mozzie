@@ -106,6 +106,13 @@ def run_custom(
     Returns:
         str: Output from the GDSiMS script.
     """
+    if not Path(working_dir).is_dir():
+        msg = f"Working directory {working_dir} does not exist."
+        raise FileNotFoundError(msg)
+    if not Path(params_path).is_file():
+        msg = f"Parameters file {params_path} does not exist."
+        raise FileNotFoundError(msg)
+
     process = subprocess.Popen(
         [str(script_path)],
         cwd=str(working_dir),
