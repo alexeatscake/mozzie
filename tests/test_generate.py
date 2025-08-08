@@ -69,6 +69,37 @@ def test_run_custom(working_dir: Path):
     assert total1_df.shape[0] == 101, msg
 
 
+def test_run_with_coords(working_dir: Path):
+    """
+    Test running the GDSiMS script with coordinates.
+
+    Args:
+        out_path (Path): Path to the output directory.
+    """
+    working_coords_dir = working_dir / "coords"
+    working_coords_dir.mkdir()
+    params_path = REPO_ROOT / "tests" / "test_data" / "test_coord_params.txt"
+    coords_path = REPO_ROOT / "tests" / "test_data" / "test_coords.csv"
+    output = mozzie.generate.run_with_coords(
+        METAPOP_LOC, working_coords_dir, params_path, coords_path
+    )
+    msg = "Program did not give expected output."
+    assert "Program run time" in output, msg
+    out_file_dir = working_coords_dir / "output_files"
+    msg = "Output directory not created as expected."
+    assert out_file_dir.is_dir(), msg
+    msg = "Expected output files not found in the output directory."
+    assert (out_file_dir / "Totals1002run1.txt").is_file(), msg
+    assert (out_file_dir / "CoordinateList1002run1.txt").is_file(), msg
+    assert (out_file_dir / "LocalData1002run1.txt").is_file(), msg
+
+    total1_df = pd.read_csv(out_file_dir / "Totals1002run1.txt", sep="\t", header=1)
+    msg = "Totals1002run1.txt does not contain expected data."
+    assert not total1_df.empty, msg
+    assert "WW" in total1_df.columns, msg
+    assert total1_df.shape[0] == 51, msg
+
+
 def test_run_default_stdin_error(working_dir: Path):
     """
     Test run_default to simulate stdin error.
