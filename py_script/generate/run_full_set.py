@@ -7,10 +7,17 @@ from tqdm import tqdm
 from mozzie.generate import run_custom
 
 
-def main(config_path: str):
+def main(config_loc: str):
+    """This script runs GDSiMS for all .txt params in a folder and will use fixed
+    coordinates if provided in the config file. It expects a config file that specifies
+    the coordinates path and other parameters if needed.
+
+    Args:
+        config_loc (str): Path to the config file from the main directory.
+    """
     main_dir = Path(__file__).resolve().parent.parent.parent
     script_path = main_dir / "GeneralMetapop/build/gdsimsapp"
-    config_path = main_dir / config_path
+    config_path = main_dir / config_loc
     working_dir = main_dir / config_path.parent
     params_dir = working_dir / "params"
 
@@ -33,6 +40,8 @@ def main(config_path: str):
     if not txt_files:
         print(f"No .txt files found in {params_dir}")
         return
+
+    input_values: list[tuple[str, str, str, str | None]] = []  # for mypy
 
     coords_set = config.get("coords_set")
     if coords_set is not None:

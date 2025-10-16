@@ -9,18 +9,24 @@ from tqdm import tqdm
 from mozzie.generate import run_custom
 
 
-def run_for_parallel(x):
+def run_for_parallel(
+    x: tuple[str | Path, str | Path, str | Path, str | Path | None],
+) -> str:
     return run_custom(*x)
 
 
-def main(config_path: str, number_of_workers: int):
+def main(config_loc: str, number_of_workers: int):
     """This script runs GDSiMS for all .txt params in a folder and will use fixed
     coordinates if provided in the config file. It expects a config file that specifies
     the coordinates path and other parameters if needed.
+
+    Args:
+        config_loc (str): Path to the config file from the main directory.
+        number_of_workers (int): Number of parallel workers to use.
     """
     main_dir = Path(__file__).resolve().parent.parent.parent
     script_path = main_dir / "GeneralMetapop/build/gdsimsapp"
-    config_path = main_dir / config_path
+    config_path = main_dir / config_loc
     working_dir = main_dir / config_path.parent
     params_dir = working_dir / "params"
 
@@ -43,6 +49,8 @@ def main(config_path: str, number_of_workers: int):
     if not txt_files:
         print(f"No .txt files found in {params_dir}")
         return
+
+    input_values: list[tuple[str, str, str, str | None]] = []  # for mypy
 
     coords_set = config.get("coords_set")
     if coords_set is not None:
