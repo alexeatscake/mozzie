@@ -30,9 +30,11 @@ dependencies = [
   "pre-commit",
   "tqdm",
   "autoemulate>=0.3.2",
+  "pandas>=2.3.0",
+  "matplotlib>=3.10.3",
+  "numpy>=1.26.4",
+  "notebook>=7.4.7",
 ]
-
-[project.optional-dependencies]
 
 [project.urls]
 Homepage = "https://github.com/alexeatscake/mozzie"
@@ -110,4 +112,4 @@ unfixable = [
   "F401",   # Would remove unused imports
   "F841",   # Would remove unused variables
 ]
-flake8-unused-arguments.ignore-variadic-names = true  # allow unused *args/**kwargsisort.required-imports = ["from __future__ import annotations"]
+flake8-unused-arguments.ignore-variadic-names = true  # allow unused *args/**kwargs
