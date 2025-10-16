@@ -80,7 +80,7 @@ def test_run_with_coords(working_dir: Path):
     working_coords_dir.mkdir()
     params_path = REPO_ROOT / "tests" / "test_data" / "test_coord_params.txt"
     coords_path = REPO_ROOT / "tests" / "test_data" / "test_coords.csv"
-    output = mozzie.generate.run_with_coords(
+    output = mozzie.generate.run_custom_with_coords(
         METAPOP_LOC, working_coords_dir, params_path, coords_path
     )
     msg = "Program did not give expected output."

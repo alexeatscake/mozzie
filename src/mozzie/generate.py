@@ -92,7 +92,7 @@ def run_default(script_path: str | Path, working_dir: str | Path) -> str:
     return stdout.decode()
 
 
-def run_custom(
+def run_custom_no_coords(
     script_path: str | Path, working_dir: str | Path, params_path: str | Path
 ) -> str:
     """
@@ -141,7 +141,7 @@ def run_custom(
     return stdout.decode()
 
 
-def run_with_coords(
+def run_custom_with_coords(
     script_path: str | Path,
     working_dir: str | Path,
     params_path: str | Path,
@@ -212,3 +212,31 @@ def run_with_coords(
 
     stdout, _ = process.communicate()
     return stdout.decode()
+
+
+def run_custom(
+    script_path: str | Path,
+    working_dir: str | Path,
+    params_path: str | Path,
+    coords_path: str | Path | None = None,
+) -> str:
+    """
+    Run the GDSiMS script with custom parameters.
+
+    This function just hands off to either `run_custom_no_coords` or
+    `run_custom_with_coords` depending on whether `coords_path` is provided.
+
+    Args:
+        script_path (str): Path to the GDSiMS script.
+        working_dir (str): Directory where the script should be run.
+        params_path (str): Path to the file containing custom parameters.
+        coords_path (str, optional): Path to the file containing coordinates.
+            Defaults to None.
+
+    Returns:
+        str: Output from the GDSiMS script.
+    """
+    if coords_path is None:
+        return run_custom_no_coords(script_path, working_dir, params_path)
+
+    return run_custom_with_coords(script_path, working_dir, params_path, coords_path)

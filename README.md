@@ -68,6 +68,25 @@ This uses Latin Hypercube Sampling to generate the parameters.
 python py_script/generate/build_param_files.py data/generated/example/example_config.yaml
 ```
 
+### With Coordinates
+
+It is also possible to generate parameters using a custom set of coordinates or to generate different release sites to study spatial effects.
+You can find an example configuration file in `data/generated/example_grid/example_grid_config.yaml`.
+It is also possible to provide just one coordinate file and use this for every experiment.
+
+To generate the coordinates, you can use the `build_coord_files.py` script.
+
+```bash
+python py_script/generate/build_coord_files.py data/generated/example_grid/example_grid_config.yaml
+```
+
+This will generate the coordinates in the `coords_path` specified in the configuration file.
+These can then be used to generate the parameter files as before.
+
+```bash
+python py_script/generate/build_param_files.py data/generated/example_grid/example_grid_config.yaml
+```
+
 ### Running the GDSiMS Model
 
 Once you have generated the parameter files, you can run the GDSiMS model for all the experiments.
@@ -75,14 +94,16 @@ You can use the `run_full_set.py` script to run all the experiments in the conta
 These will be then be saved in the corresponding `output_files` directory.
 
 ```bash
-python py_script/generate/run_full_set.py data/generated/example
+python py_script/generate/run_full_set.py data/generated/example/example_config.yaml
 ```
 
 It is also possible to run these experiments in parallel using the `pl_run_full_set.py` script.
 This as default uses 4 processes, but you can change this by setting the `WORKERS_FOR_MOZZIE` environment variable.
+For example, to use 12 processes, you can run:
 
 ```bash
-python py_script/generate/pl_run_full_set.py data/generated/example
+export WORKERS_FOR_MOZZIE=12
+python py_script/generate/pl_run_full_set.py data/generated/example/example_config.yaml
 ```
 
 ## Surrogate Modelling
