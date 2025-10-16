@@ -2,7 +2,7 @@ import argparse
 from pathlib import Path
 
 import yaml
-from autoemulate.experimental_design import LatinHypercube
+from scipy.stats import qmc
 from tqdm import tqdm
 
 from mozzie.data_prep import read_config
@@ -41,7 +41,12 @@ def main(rel_config_path: str):
         cube_names.append(param_name)
 
     # Generate the Latin Hypercube samples
-    samples = LatinHypercube(cube_ranges).sample(num_samples)
+    lhc_sampler = qmc.LatinHypercube(d=len(cube_ranges))
+    samples = qmc.scale(
+        lhc_sampler.random(num_samples),
+        [r[0] for r in cube_ranges],
+        [r[1] for r in cube_ranges],
+    )
 
     # Write the parameter files
     for i, sample in tqdm(
