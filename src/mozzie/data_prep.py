@@ -27,7 +27,7 @@ def read_config(config_dict: dict):
     # Set values
     set_values = config_dict.get("set_values")
     if set_values is None:
-        msg = "No set values found in the config file."
+        msg = "No 'set_values' found in the config file."
         raise ValueError(msg)
     if not isinstance(set_values, dict):
         msg = "The 'set_values' field must be a dictionary."
@@ -36,12 +36,15 @@ def read_config(config_dict: dict):
     # To Sample
     to_sample = config_dict.get("to_sample")
     if to_sample is None:
-        msg = "No parameters to sample found in the config file."
+        msg = "No 'to_sample' parameters found in the config file."
         raise ValueError(msg)
-
     if not isinstance(to_sample, dict):
         msg = "The 'to_sample' field must be a dictionary of parameters."
         raise ValueError(msg)
+    for param_choice in to_sample:
+        if param_choice not in parameter_order:
+            msg = f"Parameter '{param_choice}' in 'to_sample' is not recognized."
+            raise ValueError(msg)
     for param_options in to_sample.values():
         if not isinstance(param_options, dict):
             msg = "Each parameter option must be a dictionary."
