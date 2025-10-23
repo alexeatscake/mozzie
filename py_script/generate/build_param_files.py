@@ -2,9 +2,9 @@ import argparse
 from pathlib import Path
 
 import yaml
-from scipy.stats import qmc
 from tqdm import tqdm
 
+from mozzie.construct import generate_parameter_samples
 from mozzie.data_prep import read_config
 from mozzie.generate import parameter_order
 
@@ -23,30 +23,9 @@ def main(rel_config_path: str):
 
     set_values, to_sample, num_samples, start_index, _ = read_config(config)
 
-    # Pull out the parameters to sample
-    cube_ranges = []
-    cube_names = []
-    for param_name, param_options in to_sample.items():
-        if param_options["type"] != "float":
-            msg = f"Unsupported type {param_options['type']} for {param_name}."
-            raise ValueError(msg)
-        if not param_options["min"] < param_options["max"]:
-            msg = (
-                f"Invalid range for {param_name}: "
-                f"{param_options['min']} >= {param_options['max']}."
-            )
-            raise ValueError(msg)
-
-        cube_ranges.append((param_options["min"], param_options["max"]))
-        cube_names.append(param_name)
-
-    # Generate the Latin Hypercube samples
-    lhc_sampler = qmc.LatinHypercube(d=len(cube_ranges))
-    samples = qmc.scale(
-        lhc_sampler.random(num_samples),
-        [r[0] for r in cube_ranges],
-        [r[1] for r in cube_ranges],
-    )
+    # Generate parameter samples
+    samples = generate_parameter_samples(to_sample, num_samples)
+    cube_names = list(to_sample.keys())
 
     # Write the parameter files
     for i, sample in tqdm(
