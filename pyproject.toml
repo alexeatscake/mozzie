@@ -10,7 +10,7 @@ authors = [
 ]
 description = "This is a surrogate modelling package for GDSiMS."
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 classifiers = [
   "Intended Audience :: Science/Research",
   "Intended Audience :: Developers",
@@ -19,9 +19,9 @@ classifiers = [
   "Programming Language :: Python",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
   "Topic :: Scientific/Engineering",
 ]
 dependencies = [
@@ -29,12 +29,12 @@ dependencies = [
   "pytest-cov",
   "pre-commit",
   "tqdm",
-  "autoemulate>=0.3.2",
-  "pandas>=2.3.0",
-  "matplotlib>=3.10.3",
-  "numpy>=1.26.4",
-  "notebook>=7.4.7",
-  "scipy>=1.15.3",
+  "autoemulate>=1.2",
+  "pandas>=2.3",
+  "matplotlib>=3.10",
+  "numpy>=2.3",
+  "notebook>=7.4",
+  "scipy>=1.16",
 ]
 
 [project.urls]
