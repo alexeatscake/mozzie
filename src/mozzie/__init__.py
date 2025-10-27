@@ -6,9 +6,13 @@ from __future__ import annotations
 
 from importlib.metadata import version
 
-__all__ = ("__version__", "generate")
+__all__ = ("__version__", "generate", "construct", "coords", "data_prep", "visualise")
 __version__ = version(__name__)
 
 from . import (
+    construct,
+    coords,
+    data_prep,
     generate,
+    visualise,
 )
