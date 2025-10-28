@@ -371,3 +371,83 @@ def contruct_total_x_and_y(
         y.append(total_values.flatten())
 
     return np.array(X), np.array(y)
+
+
+def load_state_values(
+    data_path: str | Path, config_dict: dict, state_timestamp: int
+) -> dict[int, np.ndarray]:
+    """
+    This loads the local state values at a specific timestamp from the output files.
+
+    Args:
+        data_path (str): The path to the directory containing the output files.
+        config_dict (dict): The configuration dictionary which needs to contain:
+            - "start_index": The starting index for the samples.
+            - "num_samples": The number of samples to load.
+            - "state_timestamp": The specific timestamp to extract state data for.
+        state_timestamp (int): The specific timestamp to extract state data for.
+
+    Returns:
+        dict[int, np.ndarray]: A dictionary where keys are sample indices and values
+            are numpy arrays containing the local state values at the specified
+            timestamp.
+    """
+    data_path = Path(data_path)
+    output_files_dir = data_path / "output_files"
+    if not output_files_dir.exists():
+        msg = f"Output files directory {output_files_dir} does not exist."
+        raise FileNotFoundError(msg)
+
+    start_index = config_dict["start_index"]
+    end_index = start_index + config_dict["num_samples"]
+
+    state_data: dict[int, np.ndarray] = {}
+
+    for val in range(start_index, end_index):
+        local_df = pd.read_csv(
+            output_files_dir / f"LocalData{val}run1.txt",
+            sep="\t",
+            header=1,
+        )
+
+        if state_timestamp not in local_df["Day"].values:
+            msg = f"Timestamp {state_timestamp} not found in LocalData{val}run1.txt."
+            raise ValueError(msg)
+
+        state_data[val] = local_df[local_df["Day"] == state_timestamp][
+            ["WW", "WD", "DD", "WR", "RR", "DR"]
+        ].values
+
+    return state_data
+
+
+def construct_state_x_and_y(
+    state_data: dict[int, np.ndarray],
+    sample_values: dict[int, dict[str, float]],
+) -> tuple[np.ndarray, np.ndarray]:
+    """
+    Constructs the feature matrix X and target vector y from state data and
+    sample values.
+
+    Args:
+        state_data (dict[int, np.ndarray]): State data where keys are sample indices
+            and values are numpy arrays containing the local state values at a
+            specific timestamp.
+        sample_values (dict[int, dict[str, float]]): Sample values where keys are
+            sample indices and values are dictionaries of parameter values for each
+            sample.
+
+    Returns:
+        tuple[np.ndarray, np.ndarray]: A tuple containing the feature matrix X and
+            the target vector y. X is a 2D array where each row corresponds to a
+            sample's parameter values, and y is a 2D array where each row corresponds
+            to the state values at the specified timestamp.
+    """
+    X = []
+    y = []
+
+    for sample_idx, state_values in state_data.items():
+        X.append(np.array(list(sample_values[sample_idx].values())))
+        y.append(state_values.flatten())
+
+    return np.array(X), np.array(y)

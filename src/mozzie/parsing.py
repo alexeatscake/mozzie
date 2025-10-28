@@ -112,7 +112,7 @@ def read_local_data(file_path: str | Path) -> tuple[np.ndarray, np.ndarray]:
 
 
 def aggregate_mosquito_data(
-    data: np.ndarray,
+    data: np.ndarray | pd.DataFrame,
     aggregation_type: str,
 ) -> np.ndarray:
     """
@@ -123,7 +123,7 @@ def aggregate_mosquito_data(
     to the specified aggregation method.
 
     Args:
-        data (np.ndarray): Input data array. Can be either:
+        data (np.ndarray | pd.DataFrame): Input data array. Can be either:
             - 2D array with shape [site, mozzie_type]
             - 3D array with shape [time, site, mozzie_type]
             The mozzie_type dimension should correspond to
@@ -145,6 +145,9 @@ def aggregate_mosquito_data(
             - If input is 2D [site, mozzie_type] -> returns 1D [site]
             - If input is 3D [time, site, mozzie_type] -> returns 2D [time, site]
     """
+    if isinstance(data, pd.DataFrame):
+        data = data.values
+
     if data.ndim not in [2, 3]:
         msg = "Data must be 2D [site, mozzie_type] or 3D [time, site, mozzie_type]"
         raise ValueError(msg)
