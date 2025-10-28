@@ -78,7 +78,7 @@ def plot_map_scatter(
         max_population = np.max(population_data)
 
     # Create the heat map
-    fig = plt.figure(figsize=(8, 6), tight_layout=True, dpi=200)
+    fig = plt.figure(figsize=(6, 6), tight_layout=True, dpi=200)
     ax = fig.add_subplot(111)
 
     scatter = ax.scatter(
@@ -92,7 +92,7 @@ def plot_map_scatter(
     )
 
     # Add colorbar
-    cbar = fig.colorbar(scatter, ax=ax)
+    cbar = fig.colorbar(scatter, ax=ax, fraction=0.046, pad=0.04)
     cbar.set_label("Mosquito Population", rotation=270, labelpad=20)
 
     # Formatting
@@ -101,6 +101,7 @@ def plot_map_scatter(
     ax.set_ylabel("Y Coordinate")
     ax.set_aspect("equal")
 
+    fig.tight_layout()
     fig.show()
 
 
@@ -139,7 +140,7 @@ def plot_map_contour(
     Z = griddata((x_coords, y_coords), population_data, (X, Y), method="nearest")
 
     # Create the heat map
-    fig = plt.figure(figsize=(8, 6), tight_layout=True, dpi=200)
+    fig = plt.figure(figsize=(6, 6), tight_layout=True, dpi=200)
     ax = fig.add_subplot(111)
 
     contour = ax.contourf(
@@ -147,7 +148,7 @@ def plot_map_contour(
     )
 
     # Add colour bar
-    cbar = fig.colorbar(contour, ax=ax)
+    cbar = fig.colorbar(contour, ax=ax, fraction=0.046, pad=0.04)
     cbar.set_label("Mosquito Population", rotation=270, labelpad=20)
 
     # Formatting
@@ -158,6 +159,7 @@ def plot_map_contour(
     ax.set_xlim(x_min, x_max)
     ax.set_ylim(y_min, y_max)
 
+    fig.tight_layout()
     fig.show()
 
 
@@ -166,6 +168,7 @@ def plot_map_animation(
     coord_information: np.ndarray,
     title: str = "Mosquito Population Animation",
     max_population: float | None = None,
+    timestamps: list | None = None,
     interval: int = 200,
 ) -> FuncAnimation:
     """
@@ -179,6 +182,8 @@ def plot_map_animation(
         title (str): Title of the animation.
         max_population (float, optional): Maximum population value for color scaling.
             Defaults to None, which uses the maximum value from population_data_2d.
+        timestamps (list, optional): List of time stamps corresponding to each frame.
+            Defaults to None, which uses frame indices.
         interval (int): Interval between frames in milliseconds.
 
     Returns:
@@ -202,7 +207,7 @@ def plot_map_animation(
     X, Y = np.meshgrid(xi, yi)
 
     # Set up the figure and axis
-    fig = plt.figure(figsize=(8, 6), tight_layout=True, dpi=200)
+    fig = plt.figure(figsize=(6, 6), tight_layout=True, dpi=200)
     ax = fig.add_subplot(111)
 
     # Initialize the contour plot
@@ -214,7 +219,7 @@ def plot_map_animation(
     )
 
     # Add colorbar
-    cbar = fig.colorbar(contour, ax=ax)
+    cbar = fig.colorbar(contour, ax=ax, fraction=0.046, pad=0.04)
     cbar.set_label("Mosquito Population", rotation=270, labelpad=20)
 
     # Formatting
@@ -224,6 +229,8 @@ def plot_map_animation(
     ax.set_aspect("equal")
     ax.set_xlim(x_min, x_max)
     ax.set_ylim(y_min, y_max)
+
+    fig.tight_layout()
 
     def animate(frame):
         ax.clear()
@@ -236,8 +243,9 @@ def plot_map_animation(
         # Create new contour plot
         ax.contourf(X, Y, Z, levels=np.linspace(0, max_population, 100), cmap=cc.cm.bmw)
 
+        current_time = timestamps[frame] if timestamps is not None else frame
         # Update formatting
-        ax.set_title(f"{title} - Day {frame}")
+        ax.set_title(f"{title} - Day {current_time}")
         ax.set_xlabel("X Coordinate")
         ax.set_ylabel("Y Coordinate")
         ax.set_aspect("equal")

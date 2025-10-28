@@ -371,17 +371,3 @@ def contruct_total_x_and_y(
         y.append(total_values.flatten())
 
     return np.array(X), np.array(y)
-
-
-def cast_back_data(flattened_data: np.ndarray) -> pd.DataFrame:
-    """
-    Casts back the flattened data to a DataFrame with the original column names.
-
-    Args:
-        flattened_data (np.ndarray): The flattened data to be cast back.
-
-    Returns:
-        pd.DataFrame: A DataFrame with the original column names.
-    """
-    columns = ["WW", "WD", "DD", "WR", "RR", "DR"]
-    return pd.DataFrame(flattened_data.reshape(-1, len(columns)), columns=columns)
