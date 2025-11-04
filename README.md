@@ -1,6 +1,7 @@
-# mozzie
+# Mozzie
 
-This is a surrogate modelling package for GDSiMS.
+This is a surrogate modelling package for [GDSiMS](https://github.com/AceRNorth/gdsims) (the Gene Drive Simulator of Mosquito Spread).
+This uses [AutoEmulate](https://www.autoemulate.com/) for the emulation functionality.
 
 ## Installation
 
@@ -98,7 +99,7 @@ python py_script/generate/run_full_set.py data/generated/example/example_config.
 ```
 
 It is also possible to run these experiments in parallel using the `pl_run_full_set.py` script.
-This as default uses 4 processes, but you can change this by setting the `WORKERS_FOR_MOZZIE` environment variable.
+This defaults to 4 processes, but you can change this by setting the `WORKERS_FOR_MOZZIE` environment variable.
 For example, to use 12 processes, you can run:
 
 ```bash
@@ -108,7 +109,7 @@ python py_script/generate/pl_run_full_set.py data/generated/example/example_conf
 
 ## Surrogate Modelling
 
-To do the modelling you will need a lot of data.
+To do the modelling, you will need a lot of data.
 There exists a configuration file for a fitness study in `data/generated/fitness_study/fitness_config.yaml`.
 
 You can run the following command to generate the data for the fitness study:
@@ -116,13 +117,75 @@ You can run the following command to generate the data for the fitness study:
 ```bash
 export WORKERS_FOR_MOZZIE=12
 python py_script/generate/build_param_files.py data/generated/fitness_study/fitness_config.yaml
-python py_script/generate/pl_run_full_set.py data/generated/fitness_study
+python py_script/generate/pl_run_full_set.py data/generated/fitness_study/fitness_config.yaml
 python py_script/data_prep/load_total_data.py data/generated/fitness_study/fitness_config.yaml
 ```
 
 ### Using AutoEmulate
 
 To see the functionality of AutoEmulate, it is best to run the notebook `notebooks/fitness_autoemulate.ipynb`.
+
+## Centre Release
+
+An example study examining the spread of the drive gene across a spatial area is provided as an illustration.
+
+### Centre Data Generation
+
+An example config file already exists at `data/generated/centre_release/centre_release_config.yaml`, and an example coordinate file exists at `data/generated/centre_release/coords.csv`.
+The example config file only requests 25 runs of the simulation defined on line 44 by `num_samples: 25`, which is sufficient for an example.
+However, to train a usable emulator, this number should be increased.
+I ran the example with 1000 runs of the simulation, which took 80 CPU-core hours to complete.
+
+```bash
+export WORKERS_FOR_MOZZIE=12
+python py_script/generate/build_param_files.py data/generated/centre_release/centre_release_config.yaml
+python py_script/generate/pl_run_full_set.py data/generated/centre_release/centre_release_config.yaml
+python py_script/data_prep/load_total_data.py data/generated/centre_release/centre_release_config.yaml
+python py_script/data_prep/load_state_data.py data/generated/centre_release/centre_release_config.yaml 460
+```
+
+This script generates the state files at a timestamp of 460, which is 360 days after the release on day 100.
+This can be changed to that value, but it was chosen so that it corresponds to approximately one year after the release date.
+
+### Building the Emulator
+
+This is given as an example in the `notebooks/centre_release_ae.ipynb` file.
+
+## Visualisation of the Spread
+
+There are some tools for visualising the spread of the gene drive.
+This allows the generation of an animation of the mosquito population over time.
+It is also possible for it to show the prevalence of the drive gene in the population.
+
+```py
+local_data, timestamps = mozzie.parsing.read_local_data(
+    "data/generated/centre_release/output_files/LocalData2000run1.txt"
+)
+
+coords = pd.read_csv(
+    "data/generated/centre_release/coords.csv",
+    sep="\t",
+    header=0,
+)[['x', 'y']].to_numpy()
+
+pop_data = mozzie.parsing.aggregate_mosquito_data(
+    local_data, "total_wild"
+)
+```
+
+Once the data is prepared, the animation can be created using the following command:
+
+```py
+animation = mozzie.visualise.plot_map_animation(
+    pop_data,
+    coords,
+    title="Wild Type Mosquito Population",
+    timestamps=timestamps
+)
+```
+
+It can then be visualised in a Jupyter Notebook using `HTML(animation.to_html5_video())`.
+It can also be saved as a GIF file using `animation.save("wild_type_population.gif", writer="pillow", fps=5)`.
 
 ## License
 

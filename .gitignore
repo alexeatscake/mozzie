@@ -5,6 +5,8 @@ data/generated/
 !data/generated/example/params/example_params_2.txt
 !data/generated/example/example_config.yaml
 !data/generated/fitness_study/fitness_config.yaml
+!data/generated/centre_release/centre_release_config.yaml
+!data/generated/centre_release/coords.csv
 
 ## FROM TEMPLATE ##
 
