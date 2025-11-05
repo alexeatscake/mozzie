@@ -14,7 +14,7 @@ python -m pip install mozzie
 From source:
 ```bash
 git clone https://github.com/alexeatscake/mozzie
-cd mossie
+cd mozzie
 python -m pip install .
 ```
 
@@ -150,6 +150,24 @@ This can be changed to that value, but it was chosen so that it corresponds to a
 ### Building the Emulator
 
 This is given as an example in the `notebooks/centre_release_ae.ipynb` file.
+
+## Multiple Release Sites
+
+It is also possible to simulate multiple release sites.
+This looks at how the spread of mosquitoes is affected by the release of mosquitoes in nearby locations.
+
+Similar to the other experiments we need to first generate the relevant files to run the simulations, then run the simulations, and finally process the data.
+The difference this time is that we also need to generate multiple coordinate files using the `build_coord_files.py` script.
+
+```bash
+export WORKERS_FOR_MOZZIE=12
+python py_script/generate/build_param_files.py data/generated/multi_release/multi_release_config.yaml
+python py_script/generate/build_coord_files.py data/generated/multi_release/multi_release_config.yaml
+python py_script/generate/pl_run_full_set.py data/generated/multi_release/multi_release_config.yaml
+python py_script/data_prep/load_state_site_data.py data/generated/multi_release/multi_release_config.yaml 460
+```
+
+Once this is done, the data can be used to train an emulator as shown in the `notebooks/multi_release_ae.ipynb` notebook.
 
 ## Visualisation of the Spread
 

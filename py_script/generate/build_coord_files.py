@@ -91,8 +91,8 @@ def main(rel_config_path: str):
     for s_i in tqdm(range(start_index, start_index + num_samples)):
         # Pick num_release_sites coordinates without replacement
         selected_indices = np.random.choice(
-            len(coord_list), num_release_sites, replace=False
-        )
+            len(coord_list) - 1, num_release_sites, replace=False
+        )  # -1 is to avoid the off-by-one error in GDSiMS
         selected_coords = [coord_list[i] for i in selected_indices]
 
         # Place selected coordinates into the dataframe

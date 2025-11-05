@@ -165,7 +165,7 @@ def read_values_from_params(
 
 
 def load_samples_values(
-    data_path: str | Path, config_dict: dict
+    data_path: str | Path, config_dict: dict, add_sites: bool = False
 ) -> dict[int, dict[str, float]]:
     """
     This loads the sample values from the parameters files.
@@ -179,6 +179,8 @@ def load_samples_values(
             - "start_index": The starting index for the samples.
             - "num_samples": The number of samples to load.
             - "to_sample": A dictionary of parameters to sample.
+        add_sites (bool): Whether to add release site information from
+            'release_sites.csv' to the sample values.
 
     Returns:
         dict[int, dict[str, float]]: A dictionary where keys are sample indices and
@@ -204,6 +206,23 @@ def load_samples_values(
             raise FileNotFoundError(msg)
 
         all_sample_values[val] = read_values_from_params(params_path, to_sample)
+
+    if add_sites:
+        sites_file = data_path / "release_sites.csv"
+        if not sites_file.exists():
+            msg = (
+                f"Release sites file {sites_file} does not exist, "
+                "but add_sites is set to True."
+            )
+            raise FileNotFoundError(msg)
+        sites_df = pd.read_csv(sites_file, sep=",", header=0, index_col="sample_idx")
+        for val in range(start_index, end_index):
+            if val not in sites_df.index:
+                msg = f"Sample index {val} not found in release sites file."
+                raise ValueError(msg)
+            all_sample_values[val] = (
+                all_sample_values[val] | sites_df.loc[val].to_dict()
+            )
 
     return all_sample_values
 

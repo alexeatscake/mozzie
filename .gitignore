@@ -7,6 +7,7 @@ data/generated/
 !data/generated/fitness_study/fitness_config.yaml
 !data/generated/centre_release/centre_release_config.yaml
 !data/generated/centre_release/coords.csv
+!data/generated/multi_release/multi_release_config.yaml
 
 ## FROM TEMPLATE ##
 
